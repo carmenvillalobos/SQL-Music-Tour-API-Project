@@ -25,7 +25,7 @@ events.get('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json(error)
     }
-})
+ })
 
 // CREATE AN EVENT
 events.post('/', async (req, res) => {
