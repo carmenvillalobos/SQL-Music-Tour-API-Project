@@ -22,31 +22,28 @@ bands.get('/', async (req, res) => {
 
 // SHOW ROUTE
 // FIND A SPECIFIC BAND
-bands.get('/:id', async (req, res) => {
+bands.get('/:name', async (req, res) => {
+    console.log(req.params.name)
     try {
         const foundBand = await Band.findOne({
-                where: { id: req.params.id },
-                include: [
-                    { 
-                        model: MeetGreet, 
-                        as: "meet_greets", 
-                        include: { 
-                            model: Event, 
-                            as: "event",
-                            where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } } 
-                        }
-                    },
-                    { 
-                        model: SetTime, 
-                        as: "set_times", 
-                        include: { 
-                            model: Event, 
-                            as: "event",
-                            where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } } 
-                        }
+            where: { name: req.params.name },
+            include: [ 
+                { 
+                    model: MeetGreet, 
+                    include: { 
+                        model: Event, 
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
+                    } 
+                },
+                { 
+                    model: SetTime,
+                    include: { 
+                        model: Event, 
+                        where: { name: { [Op.like]: `%${req.query.event ? req.query.event : ''}%` } }
                     }
-                ]
-            })
+                }
+            ]
+        })
         res.status(200).json(foundBand)
     } catch (error) {
         res.status(500).json(error)
@@ -57,12 +54,14 @@ bands.get('/:id', async (req, res) => {
 // CREATE A BAND
 bands.post('/', async (req, res) => {
     try {
+        console.log(req.body)
         const newBand = await Band.create(req.body)
         res.status(200).json({
             message: 'Successfully inserted a new band',
             data: newBand
         })
     } catch(err) {
+        console.log(err)
         res.status(500).json(err)
     }
 })
