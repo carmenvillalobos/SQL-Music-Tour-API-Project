@@ -1,7 +1,7 @@
 // DEPENDENCIES
 const events = require('express').Router()
 const db = require('../models')
-const { Event } = db 
+const { Event, Stage } = db 
 
 // FIND ALL EVENTS
 events.get('/', async (req, res) => {
@@ -15,11 +15,45 @@ events.get('/', async (req, res) => {
     }
 })
 
+// SHOW ROUTE
 // FIND A SPECIFIC EVENT
-events.get('/:id', async (req, res) => {
+events.get('/:name', async (req, res) => {
     try {
         const foundEvents = await Event.findOne({
-            where: { event_id: req.params.id }
+            where: { name: req.params.name },
+            include: [
+                {
+                  model: MeetGreet,
+                  order: [['available_start_time', 'ASC']],
+                  include: {
+                    model: Band,
+                    attributes: ['id', 'name', 'genre', 'available_start_time', 'end_time'],
+                  },
+                  attributes: ['id', 'meet_start_time', 'meet_end_time'],
+                },
+                {
+                  model: SetTime,
+                  attributes: ['id', 'startTime', 'endTime'],
+                  order: [['startTime', 'ASC']],
+                  include: [
+                    {
+                      model: Band,
+                      attributes: ['id', 'name', 'genre', 'available_start_time', 'end_time'],
+                    },
+                    {
+                      model: Stage,
+                      attributes: ['id', 'name'],
+                    }
+                  ]
+                },
+                {
+                  model: Stage,
+                  attributes: ['id', 'name'],
+                  through: {
+                    attributes: []
+                  },
+                },
+              ],
         })
         res.status(200).json(foundEvents)
     } catch (error) {

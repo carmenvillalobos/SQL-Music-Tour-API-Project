@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       stage_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       start_time: {
         type: Sequelize.DATE

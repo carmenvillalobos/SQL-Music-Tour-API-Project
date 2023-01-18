@@ -9,10 +9,28 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      start_time: {
+      event_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Events',
+          },
+          key: 'id'
+        },
+      },
+      band_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Bands',
+          },
+          key: 'id'
+        },
+      },
+      meet_start_time: {
         type: Sequelize.DATE
       },
-      end_time: {
+      meet_end_time: {
         type: Sequelize.DATE
       },
       createdAt: {
